@@ -49,7 +49,7 @@ app.get('/health', async (req, res) => {
 
 app.get("/hello", async (req, res) => {
     requestCounter.inc({ api: 'hello' });
-    res.json({ hello: "world", active_req: process._getActiveRequests().length });
+    res.json({ hello: "world" });
 });
 
 app.post("/bye", (req, res) => {
