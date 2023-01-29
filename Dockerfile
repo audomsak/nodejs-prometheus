@@ -5,7 +5,10 @@ WORKDIR /app
 COPY ["package.json", "package-lock.json*", "./"]
 COPY ["src", "./src/"]
 
-RUN npm install && npm run build
+RUN mkdir /.npm \
+    && npm install \
+    && npm run build \
+    && chown -R 1000660000:0 /.npm
 
 EXPOSE 8080
 
