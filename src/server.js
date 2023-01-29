@@ -3,6 +3,7 @@ import pino from 'pino';
 import expressPino from 'express-pino-logger';
 import promClient from 'prom-client';
 import regeneratorRuntime from "regenerator-runtime";
+import responseTime from 'response-time'
 
 const PORT = process.env.PORT || 8080;
 
@@ -24,6 +25,13 @@ const requestDuration = new Histogram({
     labelNames: ['handler', 'method', 'statuscode'],
 });
 
+
+const appResponseTime = new Histogram({
+    name: 'app_response_time',
+    help: 'REST APIs response time in milliseconds',
+    labelNames: ['method', 'route', 'status_code']
+});
+
 const requestCounter = new promClient.Counter({
     name: 'request_count',
     help: 'A counter of total requests',
@@ -41,6 +49,18 @@ const profilerMiddleware = (req, res, next) => {
 };
 
 app.use(profilerMiddleware);
+app.use(responseTime((req, res, time) => {
+    if (req.route.path) {
+        appResponseTime.observe(
+            {
+                method: req.method,
+                route: req.route.path,
+                status_code: res.statusCode,
+            },
+            time
+        )
+    }
+}));
 
 app.get('/health', async (req, res) => {
     logger.debug('Calling res.send');

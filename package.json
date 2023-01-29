@@ -32,6 +32,7 @@
     "pino": "^8.8.0",
     "pino-http": "^8.3.0",
     "prom-client": "^14.1.0",
-    "regenerator-runtime": "^0.13.11"
+    "regenerator-runtime": "^0.13.11",
+    "response-time": "2.3.2"
   }
 }
