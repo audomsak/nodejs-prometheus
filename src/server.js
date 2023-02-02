@@ -50,7 +50,7 @@ const profilerMiddleware = (req, res, next) => {
 
 app.use(profilerMiddleware);
 app.use(responseTime((req, res, time) => {
-    if (req.route.path) {
+    if (req && req.route && req.route.path) {
         appResponseTime.observe(
             {
                 method: req.method,
@@ -62,9 +62,18 @@ app.use(responseTime((req, res, time) => {
     }
 }));
 
+app.get('/', async (req, res) => {
+    res.json({
+        application: "Node.JS + Prometheus Demo",
+        health: "GET /health",
+        hello: "GET /hello",
+        bye: "POST /bye",
+        metrics: "GET /metrics",
+    });
+});
+
 app.get('/health', async (req, res) => {
-    logger.debug('Calling res.send');
-    return res.status(200).send({ message: "Health is good" });
+    return res.status(200).send({ status: "OK" });
 });
 
 app.get("/hello", async (req, res) => {
